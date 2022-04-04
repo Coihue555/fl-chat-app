@@ -1,4 +1,7 @@
+
 import 'package:flutter/material.dart';
+import 'package:fl_chat_app/widgets/widgets.dart';
+
 
 class LoginScreen extends StatelessWidget {
    
@@ -9,35 +12,21 @@ class LoginScreen extends StatelessWidget {
     return SafeArea(
       child: Scaffold(
         backgroundColor: const Color(0xfff2f2f2),
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            _Logo(),
-            _Form(),
-            _Labels(),
-            const Text('Terminos y condiciones de uso', style: TextStyle(fontWeight: FontWeight.w200))
-          ],
+        body: SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
+          child: Container(
+            height: MediaQuery.of(context).size.height*0.9,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Logo(titulo: 'Messenger',),
+                _Form(),
+                const Labels(ruta: 'register', titulo: 'No tienes cuenta?', subtitulo: 'Crea una ahora!S',),
+                const Text('Terminos y condiciones de uso', style: TextStyle(fontWeight: FontWeight.w200))
+              ],
+            ),
+          ),
         )
-      ),
-    );
-  }
-}
-
-class _Logo extends StatelessWidget {
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Container(
-        width: 170,
-        margin: EdgeInsets.only(top:50),
-        child: Column(
-          children: const [
-            Image(image: AssetImage('./assets/tag-logo.png')),
-            SizedBox(height: 20,),
-            Text('Messenger', style: TextStyle(fontSize: 30))
-          ],
-        ),
       ),
     );
   }
@@ -52,6 +41,9 @@ class _Form extends StatefulWidget {
 
 class __FormState extends State<_Form> {
 
+  final emailCtrl = TextEditingController();
+  final pwdCtrl = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -59,50 +51,25 @@ class __FormState extends State<_Form> {
       padding: const EdgeInsets.symmetric(horizontal: 50),
       child: Column(
         children: [
-          Container(
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(30),
-              boxShadow: <BoxShadow>[
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.05),
-                  offset: const Offset(0,5),
-                  blurRadius: 5
-                )
-              ]
-            ),
-            child: const TextField(
-              autocorrect: false,
-              keyboardType: TextInputType.emailAddress,
-              //obscureText: true,
-              decoration: InputDecoration(
-                prefixIcon: Icon(Icons.mail_outline),
-                focusedBorder: InputBorder.none,
-                border: InputBorder.none,
-               ),
-            )
-            ),
+          CustomInput(
+            icon: Icons.email_outlined,
+            placeholder: 'Email',
+            keyboardType: TextInputType.emailAddress,
+            textController: emailCtrl,
+          ),
 
-          ElevatedButton(
-            onPressed: (){},
-            child: Text('Ingresar')
-          )
-        ],
-      ),
-    );
-  }
-}
+          CustomInput(
+            icon: Icons.lock_outlined,
+            placeholder: 'Password',
+            textController: pwdCtrl,
+            isPassword: true,
+          ),
 
-class _Labels extends StatelessWidget {
+          BotonAzul(text:'Ingresar', onPressed: (){
+            print(emailCtrl.text);
+            print(pwdCtrl.text);
+          },)
 
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      child: Column(
-        children: [
-          Text('No tienes cuenta?', style: TextStyle(color: Colors.black54, fontSize: 15, fontWeight: FontWeight.w300)),
-          SizedBox(height: 10,),
-          Text('Crea una cuenta', style: TextStyle(color: Colors.blue[600], fontSize: 18, fontWeight: FontWeight.bold))
         ],
       ),
     );

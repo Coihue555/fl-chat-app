@@ -11,6 +11,6 @@ final Map<String, Widget Function(BuildContext)> appRoutes = {
   'usuarios' : (_) => const UsuariosScreen(),
   'chat'     : (_) => const ChatScreen(),
   'loading'  : (_) => const LoadingScreen(),
-  'register' : (_) => const RegisterScreen(),
+  'register' : (_) => RegisterScreen(),
   'login'    : (_) => const LoginScreen(),
 };
