@@ -1,6 +1,8 @@
-
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:fl_chat_app/widgets/widgets.dart';
+import 'package:fl_chat_app/services/auth_service.dart';
+import 'package:fl_chat_app/helpers/mostrar_alerta.dart';
 
 
 class LoginScreen extends StatelessWidget {
@@ -21,7 +23,7 @@ class LoginScreen extends StatelessWidget {
               children: [
                 const Logo(titulo: 'Messenger',),
                 _Form(),
-                const Labels(ruta: 'register', titulo: 'No tienes cuenta?', subtitulo: 'Crea una ahora!S',),
+                const Labels(ruta: 'register', titulo: 'No tienes cuenta?', subtitulo: 'Crea una ahora!',),
                 const Text('Terminos y condiciones de uso', style: TextStyle(fontWeight: FontWeight.w200))
               ],
             ),
@@ -46,6 +48,9 @@ class __FormState extends State<_Form> {
 
   @override
   Widget build(BuildContext context) {
+
+    final authService = Provider.of<AuthService>(context);
+
     return Container(
       margin: const EdgeInsets.only(top: 40),
       padding: const EdgeInsets.symmetric(horizontal: 50),
@@ -65,10 +70,19 @@ class __FormState extends State<_Form> {
             isPassword: true,
           ),
 
-          BotonAzul(text:'Ingresar', onPressed: (){
-            print(emailCtrl.text);
-            print(pwdCtrl.text);
-          },)
+          BotonAzul(
+            text:'Ingresar',
+            onPressed: authService.autenticando ? null : () async {
+              FocusScope.of(context).unfocus();
+              final loginOk = await authService.login( emailCtrl.text.trim(), pwdCtrl.text.trim() );
+
+              if (loginOk){
+                Navigator.pushReplacementNamed(context, 'usuarios');
+              } else {
+                mostrarAlerta(context, 'Login incorrecto', 'Revise sus credenciales');
+              }
+            },
+          )
 
         ],
       ),

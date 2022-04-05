@@ -18,7 +18,7 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin{
   final _textCtrl = TextEditingController();
   final _focusNode = FocusNode();
 
-  List<ChatMessage> _messages = [
+  final List<ChatMessage> _messages = [
     
   ];
 
@@ -123,9 +123,8 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin{
 
   _handleSubmit(String texto){
 
-    if (texto.length == 0) return;
+    if (texto.isEmpty) return;
 
-    print(texto);
     _textCtrl.clear();
     _focusNode.requestFocus();
 
