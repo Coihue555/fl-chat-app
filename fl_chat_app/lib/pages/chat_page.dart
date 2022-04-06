@@ -2,8 +2,10 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import 'package:fl_chat_app/widgets/widgets.dart';
+import 'package:fl_chat_app/services/services.dart';
 
 
 class ChatScreen extends StatefulWidget {
@@ -18,26 +20,40 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin{
   final _textCtrl = TextEditingController();
   final _focusNode = FocusNode();
 
-  final List<ChatMessage> _messages = [
-    
-  ];
+  late ChatService chatService;
+  late SocketService socketService;
+  late AuthService authService;
+
+  final List<ChatMessage> _messages = [ ];
 
   bool _estaEscribiendo =  false;
 
   @override
+  void initState() {
+
+    super.initState();
+    chatService   = Provider.of<ChatService>(context, listen: false);
+    socketService = Provider.of<SocketService>(context, listen: false);
+    authService   = Provider.of<AuthService>(context, listen: false);
+  }
+
+  @override
   Widget build(BuildContext context) {
+
+    final usuarioPara = chatService.usuarioPara;
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
         title: Column(
           children: [
             CircleAvatar(
-              child: const Text('Te', style: TextStyle(fontSize: 12)),
+              child: Text(usuarioPara.nombre.substring(0,2), style: const TextStyle(fontSize: 12)),
               backgroundColor: Colors.blue[100],
               maxRadius: 15,
             ),
             const SizedBox(height: 2,),
-            const Text('Meliandre Sahara', style: TextStyle(color: Colors.black87, fontSize: 12))
+            Text(usuarioPara.nombre, style: const TextStyle(color: Colors.black87, fontSize: 12))
           ],
         ),
         centerTitle: true,
@@ -136,8 +152,13 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin{
     _messages.insert(0, newMessage);
     newMessage.animationController.forward();
 
-    setState(() {
-      _estaEscribiendo = false;
+    setState(() { _estaEscribiendo = false;  });
+
+    socketService.emit('mensaje-personal', {
+      'de': authService.usuario!.uid,
+      'para': chatService.usuarioPara.uid,
+      'mensaje': texto
+
     });
 
   }

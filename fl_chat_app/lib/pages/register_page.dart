@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import 'package:fl_chat_app/helpers/mostrar_alerta.dart';
 import 'package:fl_chat_app/widgets/widgets.dart';
+import 'package:fl_chat_app/services/socket_service.dart';
 import 'package:fl_chat_app/services/auth_service.dart';
 
 
@@ -50,7 +51,8 @@ class __FormState extends State<_Form> {
   @override
   Widget build(BuildContext context) {
 
-    final authService = Provider.of<AuthService>(context);
+    final authService   = Provider.of<AuthService>(context);
+    final socketService = Provider.of<SocketService>(context);
 
     return Container(
       margin: const EdgeInsets.only(top: 40),
@@ -87,6 +89,7 @@ class __FormState extends State<_Form> {
             final registroOk = await authService.register(nombreCtrl.text.trim(), emailCtrl.text.trim(), pwdCtrl.text.trim());
             
             if (registroOk == true){
+              socketService.connect();
               Navigator.pushReplacementNamed(context, 'usuarios');
             } else {
               mostrarAlerta(context, 'Registro incorrecto', registroOk);
